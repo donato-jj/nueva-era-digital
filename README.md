@@ -1,2 +1,225 @@
 # nueva-era-digital
 nueva era digital
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apocalipsis Digital - Recolecta Dinero</title>
+<style>
+  /* ======== Estilo general ======== */
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background: #111;
+    color: #fff;
+  }
+
+  /* ======== Fondo dinámico ======== */
+  #gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #222 0%, #111 100%);
+    z-index: -1;
+  }
+
+  /* ======== HUD y estadísticas ======== */
+  #hud {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    font-size: 18px;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 20px;
+    border-radius: 10px;
+  }
+
+  .progress-container {
+    width: 200px;
+    height: 20px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #555;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0ff, #0f0, #ff0);
+    transition: width 0.2s;
+  }
+
+  /* ======== Monedas ======== */
+  .coin {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle at 30% 30%, #ff0, #cc0);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px #ff0;
+    animation: float 2s infinite ease-in-out;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
+
+  /* ======== Obstáculos ======== */
+  .obstacle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,0,0,0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 10px red;
+  }
+
+  /* ======== Mensajes emergentes ======== */
+  #message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    display: none;
+    animation: fadein 0.5s forwards;
+  }
+
+  @keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="hud">
+  <div>Dinero: $<span id="money">0</span></div>
+  <div>Tiempo: <span id="time">0</span>s</div>
+  <div>
+    Innovación
+    <div class="progress-container">
+      <div class="progress-bar" id="innovationBar"></div>
+    </div>
+  </div>
+</div>
+
+<div id="message"></div>
+
+<script>
+  /* ======== Variables del juego ======== */
+  const gameCanvas = document.getElementById('gameCanvas');
+  const ctx = gameCanvas.getContext('2d');
+  let money = 0;
+  let time = 0;
+  let innovation = 0;
+  const coins = [];
+  const obstacles = [];
+
+  /* ======== Ajuste canvas ======== */
+  function resizeCanvas() {
+    gameCanvas.width = window.innerWidth;
+    gameCanvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  /* ======== Mensajes emergentes ======== */
+  const messageDiv = document.getElementById('message');
+  function showMessage(text) {
+    messageDiv.textContent = text;
+    messageDiv.style.display = 'block';
+    setTimeout(() => { messageDiv.style.display = 'none'; }, 2000);
+  }
+
+  /* ======== Función para crear monedas ======== */
+  function spawnCoin() {
+    const coin = document.createElement('div');
+    coin.className = 'coin';
+    coin.style.left = Math.random() * (window.innerWidth - 40) + 'px';
+    coin.style.top = Math.random() * (window.innerHeight - 40) + 'px';
+    coin.addEventListener('click', () => {
+      money += 10;
+      innovation += 1;
+      document.getElementById('money').textContent = money;
+      document.getElementById('innovationBar').style.width = Math.min(innovation, 100) + '%';
+      coin.remove();
+      showMessage('Cada moneda impulsa la nueva era digital.');
+      spawnCoin();
+    });
+    document.body.appendChild(coin);
+    coins.push(coin);
+  }
+
+  /* ======== Crear obstáculos ======== */
+  function spawnObstacle() {
+    const obs = document.createElement('div');
+    obs.className = 'obstacle';
+    obs.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+    obs.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+    document.body.appendChild(obs);
+    obstacles.push(obs);
+  }
+
+  /* ======== Inicialización ======== */
+  for (let i = 0; i < 5; i++) spawnCoin();
+  for (let i = 0; i < 3; i++) spawnObstacle();
+
+  /* ======== Contador de tiempo ======== */
+  setInterval(() => {
+    time++;
+    document.getElementById('time').textContent = time;
+  }, 1000);
+
+  /* ======== Fondo dinámico ======== */
+  let hue = 0;
+  function drawBackground() {
+    ctx.fillStyle = `hsl(${hue}, 50%, 10%)`;
+    ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height);
+    hue += 0.1;
+    requestAnimationFrame(drawBackground);
+  }
+  drawBackground();
+
+  /* ======== Colisiones simples ======== */
+  function checkCollisions() {
+    coins.forEach((coin, index) => {
+      obstacles.forEach(obs => {
+        const coinRect = coin.getBoundingClientRect();
+        const obsRect = obs.getBoundingClientRect();
+        if (!(coinRect.right < obsRect.left || 
+              coinRect.left > obsRect.right || 
+              coinRect.bottom < obsRect.top || 
+              coinRect.top > obsRect.bottom)) {
+          money = Math.max(0, money - 5);
+          document.getElementById('money').textContent = money;
+          showMessage('¡Cuidado con los escombros! Perdiste dinero.');
+          coin.remove();
+          coins.splice(index,1);
+          spawnCoin();
+        }
+      });
+    });
+    requestAnimationFrame(checkCollisions);
+  }
+  checkCollisions();
+</script>
+
+</body>
+</html>
