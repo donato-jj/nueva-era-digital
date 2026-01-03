@@ -1,225 +1,205 @@
-# nueva-era-digital
-nueva era digital
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apocalipsis Digital - Recolecta Dinero</title>
-<style>
-  /* ======== Estilo general ======== */
-  body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Arial', sans-serif;
-    background: #111;
-    color: #fff;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Interactivo</title>
 
-  /* ======== Fondo dinámico ======== */
-  #gameCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, #222 0%, #111 100%);
-    z-index: -1;
-  }
+    <!-- Tipografía futurista -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
-  /* ======== HUD y estadísticas ======== */
-  #hud {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 40px;
-    font-size: 18px;
-    background: rgba(0,0,0,0.6);
-    padding: 10px 20px;
-    border-radius: 10px;
-  }
+    <style>
+        /* Variables de colores neon */
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-blue: #00ffff;
+            --neon-purple: #aa00ff;
+            --bg-dark: #0b0b0b;
+        }
 
-  .progress-container {
-    width: 200px;
-    height: 20px;
-    background: #333;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #555;
-  }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #0ff, #0f0, #ff0);
-    transition: width 0.2s;
-  }
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--bg-dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: var(--neon-blue);
+            cursor: crosshair;
+        }
 
-  /* ======== Monedas ======== */
-  .coin {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: radial-gradient(circle at 30% 30%, #ff0, #cc0);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px #ff0;
-    animation: float 2s infinite ease-in-out;
-  }
+        .hidden {
+            display: none;
+        }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-  }
+        /* Neon text effect */
+        .neon-text {
+            color: var(--neon-pink);
+            text-shadow:
+                0 0 5px var(--neon-pink),
+                0 0 10px var(--neon-pink),
+                0 0 20px var(--neon-pink),
+                0 0 40px var(--neon-pink);
+            text-align: center;
+            margin: 10px;
+        }
 
-  /* ======== Obstáculos ======== */
-  .obstacle {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background: rgba(255,0,0,0.7);
-    border-radius: 10px;
-    box-shadow: 0 0 10px red;
-  }
+        /* Coins */
+        #coins-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
 
-  /* ======== Mensajes emergentes ======== */
-  #message {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.7);
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 16px;
-    display: none;
-    animation: fadein 0.5s forwards;
-  }
+        .coin {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 30% 30%, #ffdd00, #ffaa00);
+            border-radius: 50%;
+            margin: 15px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #ffaa00, 0 0 20px #ffdd00;
+            animation: float 2s infinite ease-in-out;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-  @keyframes fadein {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-</style>
+        .coin:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px #ffff00, 0 0 40px #ffdd00;
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #ffdd00;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleMove 0.7s forwards;
+        }
+
+        @keyframes particleMove {
+            to {
+                transform: translateY(-50px) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        /* Main content */
+        #main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 2s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
-
-<canvas id="gameCanvas"></canvas>
-
-<div id="hud">
-  <div>Dinero: $<span id="money">0</span></div>
-  <div>Tiempo: <span id="time">0</span>s</div>
-  <div>
-    Innovación
-    <div class="progress-container">
-      <div class="progress-bar" id="innovationBar"></div>
+    <!-- Pantalla de bienvenida -->
+    <div id="welcome-screen">
+        <h1 class="neon-text">¡Bienvenido al Futuro!</h1>
+        <p class="neon-text">Haz click en las monedas para iniciar</p>
+        <div id="coins-container"></div>
     </div>
-  </div>
-</div>
 
-<div id="message"></div>
+    <!-- Contenido principal (oculto al inicio) -->
+    <div id="main-content" class="hidden">
+        <h2 class="neon-text">Explora el futuro con IA</h2>
+        <p class="neon-text" id="ia-speech-text">La IA futurista te hablará aquí...</p>
+    </div>
 
-<script>
-  /* ======== Variables del juego ======== */
-  const gameCanvas = document.getElementById('gameCanvas');
-  const ctx = gameCanvas.getContext('2d');
-  let money = 0;
-  let time = 0;
-  let innovation = 0;
-  const coins = [];
-  const obstacles = [];
+    <script>
+        // Frases futuristas para la IA
+        const phrases = [
+            "El futuro es un laberinto de luces y circuitos, navegable solo por los valientes.",
+            "La humanidad se encuentra entre lo digital y lo tangible, entre el código y la carne.",
+            "Cada click en esta moneda acerca tu conciencia a la red global.",
+            "El neón ilumina la oscuridad, pero también revela secretos ocultos."
+        ];
 
-  /* ======== Ajuste canvas ======== */
-  function resizeCanvas() {
-    gameCanvas.width = window.innerWidth;
-    gameCanvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+        const coinsContainer = document.getElementById('coins-container');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const mainContent = document.getElementById('main-content');
+        const iaText = document.getElementById('ia-speech-text');
 
-  /* ======== Mensajes emergentes ======== */
-  const messageDiv = document.getElementById('message');
-  function showMessage(text) {
-    messageDiv.textContent = text;
-    messageDiv.style.display = 'block';
-    setTimeout(() => { messageDiv.style.display = 'none'; }, 2000);
-  }
+        // Generar monedas
+        for (let i = 0; i < 5; i++) {
+            const coin = document.createElement('div');
+            coin.classList.add('coin');
+            coinsContainer.appendChild(coin);
 
-  /* ======== Función para crear monedas ======== */
-  function spawnCoin() {
-    const coin = document.createElement('div');
-    coin.className = 'coin';
-    coin.style.left = Math.random() * (window.innerWidth - 40) + 'px';
-    coin.style.top = Math.random() * (window.innerHeight - 40) + 'px';
-    coin.addEventListener('click', () => {
-      money += 10;
-      innovation += 1;
-      document.getElementById('money').textContent = money;
-      document.getElementById('innovationBar').style.width = Math.min(innovation, 100) + '%';
-      coin.remove();
-      showMessage('Cada moneda impulsa la nueva era digital.');
-      spawnCoin();
-    });
-    document.body.appendChild(coin);
-    coins.push(coin);
-  }
+            // Evento de click en moneda
+            coin.addEventListener('click', () => {
+                createParticles(coin);
+                playCoinSound();
+                speakRandomPhrase();
 
-  /* ======== Crear obstáculos ======== */
-  function spawnObstacle() {
-    const obs = document.createElement('div');
-    obs.className = 'obstacle';
-    obs.style.left = Math.random() * (window.innerWidth - 60) + 'px';
-    obs.style.top = Math.random() * (window.innerHeight - 60) + 'px';
-    document.body.appendChild(obs);
-    obstacles.push(obs);
-  }
-
-  /* ======== Inicialización ======== */
-  for (let i = 0; i < 5; i++) spawnCoin();
-  for (let i = 0; i < 3; i++) spawnObstacle();
-
-  /* ======== Contador de tiempo ======== */
-  setInterval(() => {
-    time++;
-    document.getElementById('time').textContent = time;
-  }, 1000);
-
-  /* ======== Fondo dinámico ======== */
-  let hue = 0;
-  function drawBackground() {
-    ctx.fillStyle = `hsl(${hue}, 50%, 10%)`;
-    ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height);
-    hue += 0.1;
-    requestAnimationFrame(drawBackground);
-  }
-  drawBackground();
-
-  /* ======== Colisiones simples ======== */
-  function checkCollisions() {
-    coins.forEach((coin, index) => {
-      obstacles.forEach(obs => {
-        const coinRect = coin.getBoundingClientRect();
-        const obsRect = obs.getBoundingClientRect();
-        if (!(coinRect.right < obsRect.left || 
-              coinRect.left > obsRect.right || 
-              coinRect.bottom < obsRect.top || 
-              coinRect.top > obsRect.bottom)) {
-          money = Math.max(0, money - 5);
-          document.getElementById('money').textContent = money;
-          showMessage('¡Cuidado con los escombros! Perdiste dinero.');
-          coin.remove();
-          coins.splice(index,1);
-          spawnCoin();
+                // Después de varios clicks mostrar contenido principal
+                if (document.querySelectorAll('.clicked').length >= 4) {
+                    welcomeScreen.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                }
+                coin.classList.add('clicked');
+            });
         }
-      });
-    });
-    requestAnimationFrame(checkCollisions);
-  }
-  checkCollisions();
-</script>
 
+        // Crear partículas al hacer click
+        function createParticles(element) {
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = element.offsetLeft + Math.random()*30 + 'px';
+                particle.style.top = element.offsetTop + Math.random()*30 + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 700);
+            }
+        }
+
+        // Sonido de moneda
+        function playCoinSound() {
+            const audio = new Audio('https://freesound.org/data/previews/341/341695_3248244-lq.mp3'); // ejemplo
+            audio.play();
+        }
+
+        // Voz generativa IA usando Web Speech API
+        function speakRandomPhrase() {
+            const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+            iaText.textContent = phrase;
+
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(phrase);
+                utterance.lang = 'es-ES';
+                utterance.pitch = 1.2;
+                utterance.rate = 1;
+                utterance.voice = speechSynthesis.getVoices().find(voice => voice.lang === 'es-ES') || null;
+                speechSynthesis.speak(utterance);
+            } else {
+                console.log("Tu navegador no soporta SpeechSynthesis");
+            }
+        }
+    </script>
 </body>
 </html>
+
